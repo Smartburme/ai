@@ -55,3 +55,4 @@ const firebaseConfig = {
 **`index.html`**
 ```html
 <!-- Full source of index.html is same as provided in previous message -->
+<!-- Full source of paymentSuccess.html is same as provided in previous message -->
