@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Burme Index</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom right, #007BFF, #66CCFF);
+      color: white;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .loader {
+      border: 6px solid #ffffff33;
+      border-top: 6px solid white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .message {
+      font-size: 18px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .login-btn {
+      position: fixed;
+      bottom: 40px;
+      padding: 15px 30px;
+      background: white;
+      color: #007BFF;
+      font-weight: bold;
+      border: none;
+      border-radius: 30px;
+      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
+      cursor: pointer;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 1s ease;
+    }
+
+    .login-btn.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader"></div>
+  <div class="message">5000 ကျပ်သွင်း၍ ရက် 30 အသုံးပြုနိုင်သည်</div>
+  <button class="login-btn" id="loginBtn" onclick="location.href='payments.html'">Login</button>
+
+  <!-- Firebase SDK Placeholder -->
+  <!-- <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+  <script>
+    const firebaseConfig = {
+      // Firebase config will go here
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script> -->
+
+  <script>
+    // Simulate loading
+    window.onload = function () {
+      setTimeout(() => {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('loginBtn').classList.add('show');
+      }, 2000);
+    };
+  </script>
+</body>
+</html>
