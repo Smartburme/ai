@@ -2,96 +2,50 @@
 <html lang="my">
 <head>
   <meta charset="UTF-8">
-  <title>Payment</title>
+  <title>Payment Success</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background: linear-gradient(to right, #0047ab, #00c6ff);
-      font-family: 'Segoe UI', sans-serif;
+      background: #28a745;
       color: white;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-      margin: 0;
       text-align: center;
     }
-
+    .success-message {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
     h1 {
-      margin-bottom: 10px;
+      font-size: 2em;
     }
-
     p {
-      font-size: 1.1em;
-      margin-bottom: 20px;
+      font-size: 1.2em;
     }
-
-    .pay-btn {
-      background: white;
-      color: #0047ab;
+    .btn {
+      margin-top: 20px;
+      background-color: #007bff;
+      color: white;
       border: none;
-      padding: 15px 30px;
-      margin: 10px;
-      border-radius: 30px;
-      font-size: 1.1em;
+      padding: 10px 20px;
+      border-radius: 5px;
       cursor: pointer;
-      transition: transform 0.2s ease;
     }
-
-    .pay-btn:hover {
-      transform: scale(1.05);
-      background: #e6f0ff;
+    .btn:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-
-  <h1>ပေးချေမှု ရွေးချယ်ပါ</h1>
-  <p>သင့်အကောင့်ကို 5000 ကျပ်ဖြင့် ရက်(30) တိုးနိုင်သည်။</p>
-
-  <button class="pay-btn" id="kbz-btn">KBZPay ဖြင့် ပေးချေမည်</button>
-  <button class="pay-btn" id="wave-btn">WavePay ဖြင့် ပေးချေမည်</button>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-  <!-- Firebase Config -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAr7Hv2ApKtNTxF11MhT5cuWeg_Dgsh0TY",
-      authDomain: "smart-burme-app.firebaseapp.com",
-      projectId: "smart-burme-app",
-      storageBucket: "smart-burme-app.appspot.com",
-      messagingSenderId: "851502425686",
-      appId: "1:851502425686:web:f29e0e1dfa84794b4abdf7"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-  </script>
-
-  <!-- Payment Logic -->
-  <script>
-    const userId = "USER_ID_001"; // Firebase Auth အသုံးပြုမယ်ဆိုရင် dynamic ပြောင်းနိုင်
-
-    function savePayment(method) {
-      db.collection("payments").doc(userId).set({
-        method: method,
-        amount: 5000,
-        status: "pending",
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        alert(method + " ဖြင့် ပေးချေမှု စာရင်းသွင်းပြီးပါပြီ။");
-        window.location.href = method === "KBZPay" ? "kbzpay-qr.html" : "wavepay-qr.html";
-      }).catch((error) => {
-        alert("မှားယွင်းမှုရှိသည်: " + error.message);
-      });
-    }
-
-    document.getElementById('kbz-btn').addEventListener('click', () => savePayment("KBZPay"));
-    document.getElementById('wave-btn').addEventListener('click', () => savePayment("WavePay"));
-  </script>
-
+  <div class="success-message">
+    <h1>Payment Successfully Completed!</h1>
+    <p>Thank you for your payment. You can now enjoy the services for the next 30 days.</p>
+    <button class="btn" onclick="window.location.href='main.html'">Go to Dashboard</button>
+  </div>
 </body>
 </html>
