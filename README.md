@@ -1,1 +1,1 @@
-https://github.com/Smartburme/Aung-Myo-Kyaw.git
+https://github.com/Smartburme/app/ai.git
