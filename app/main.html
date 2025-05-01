@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Smart Burme ai</title>
+<style>
+  body {
+    margin: 0;
+    background-color: #0000ff; /* blue background */
+    font-family: Arial, sans-serif;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  h1 {
+    margin-bottom: 0.5em;
+  }
+  label {
+    margin-top: 1em;
+    font-weight: bold;
+  }
+  input[type="file"], input[type="text"] {
+    margin-top: 0.5em;
+    padding: 0.5em;
+    font-size: 1em;
+    width: 300px;
+    border-radius: 4px;
+    border: none;
+  }
+  button {
+    margin-top: 1.5em;
+    padding: 0.75em 1.5em;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 4px;
+    background-color: #0044cc;
+    color: white;
+    cursor: pointer;
+  }
+  button:disabled {
+    background-color: #8888ff;
+    cursor: not-allowed;
+  }
+  #videoContainer {
+    margin-top: 2em;
+    width: 320px;
+    height: 240px;
+    background-color: #222288;
+    border-radius: 8px;
+    box-shadow: 0 0 15px #0000cc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #outputVideo {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+  }
+  #message {
+    margin-top: 1em;
+    font-style: italic;
+    color: #ddddff;
+  }
+</style>
+</head>
+<body>
+<h1>Smart Burme ai</h1>
+
+<label for="imageInput">Select Image to Generate Video</label>
+<input type="file" id="imageInput" accept="image/*" />
+
+<label for="promptInput">Enter Prompt Text</label>
+<input type="text" id="promptInput" placeholder="Enter your prompt here..." />
+
+<button id="generateBtn" disabled>Generate Video</button>
+
+<div id="videoContainer" aria-label="Generated video preview">
+  <!-- Video element or canvas will go here -->
+  <video id="outputVideo" controls autoplay loop muted></video>
+</div>
+
+<div id="message"></div>
+
+<script>
+  const imageInput = document.getElementById('imageInput');
+  const promptInput = document.getElementById('promptInput');
+  const generateBtn = document.getElementById('generateBtn');
+  const outputVideo = document.getElementById('outputVideo');
+  const message = document.getElementById('message');
+
+  let imageFile = null;
+
+  // Enable generate button only when both image and prompt are provided
+  function updateGenerateButton() {
+    generateBtn.disabled = !imageFile || !promptInput.value.trim();
+  }
+
+  imageInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      imageFile = e.target.files[0];
+    } else {
+      imageFile = null;
+    }
+    updateGenerateButton();
+    // Clear previous video if any
+    outputVideo.src = '';
+    message.textContent = '';
+  });
+
+  promptInput.addEventListener('input', () => {
+    updateGenerateButton();
+  });
+
+  // Function to create a short video from the image with the prompt overlay
+  async function generateVideoFromImageAndPrompt(imageFile, promptText) {
+    // Create an offscreen canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Load the image
+    const img = await new Promise((resolve, reject) => {
+      const tempImg = new Image();
+      tempImg.onload = () => resolve(tempImg);
+      tempImg.onerror = () => reject(new Error('Failed to load image'));
+      tempImg.src = URL.createObjectURL(imageFile);
+    });
+
+    // Set canvas size same as image size, max 640x480 to limit
+    const maxWidth = 640;
+    const maxHeight = 480;
+    let scale = Math.min(maxWidth / img.width, maxHeight / img.height, 1);
+    canvas.width = img.width * scale;
+    canvas.height = img.height * scale;
+
+    // Prepare to record canvas animation as video
+    const stream = canvas.captureStream(30); // 30fps
+    const recordedChunks = [];
+    const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+    mediaRecorder.ondataavailable = function(e) {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    };
+
+    // Draw animation: fade in image and prompt text over 3 seconds (90 frames)
+    const totalFrames = 90;
+    let frame = 0;
+
+    function drawFrame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Draw image with fade in
+      const alpha = Math.min(frame / totalFrames, 1);
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      // Draw prompt text with fade in and slight vertical animation
+      ctx.font = 'bold 30px Arial';
+      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+      ctx.textAlign = 'center';
+      const x = canvas.width / 2;
+      const y = canvas.height - 40 + 10 * Math.sin(frame / 10);
+      ctx.fillText(promptText, x, y);
+      ctx.globalAlpha = 1;
+
+      frame++;
+      if (frame < totalFrames) {
+        requestAnimationFrame(drawFrame);
+      } else {
+        mediaRecorder.stop();
+      }
+    }
+
+    mediaRecorder.start();
+    drawFrame();
+
+    // Wait for the recording to finish
+    await new Promise(resolve => {
+      mediaRecorder.onstop = resolve;
+    });
+
+    // Create video URL from recorded chunks
+    const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+    const videoUrl = URL.createObjectURL(videoBlob);
+    return videoUrl;
+  }
+
+  generateBtn.addEventListener('click', async () => {
+    if (!imageFile || !promptInput.value.trim()) return;
+    generateBtn.disabled = true;
+    message.textContent = 'Generating video, please wait...';
+    outputVideo.src = '';
+    outputVideo.style.display = 'none';
+    try {
+      const videoUrl = await generateVideoFromImageAndPrompt(imageFile, promptInput.value.trim());
+      outputVideo.src = videoUrl;
+      outputVideo.style.display = 'block';
+      message.textContent = 'Video generated below:';
+    } catch (err) {
+      console.error(err);
+      message.textContent = 'Error generating video. Please try again.';
+    } finally {
+      generateBtn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
+
+```
