@@ -65,11 +65,17 @@
     .status {
       text-transform: capitalize;
     }
+
+    .auth-message {
+      color: red;
+      text-align: center;
+      font-size: 1.2em;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <div class="container" id="adminPanel">
     <h1>Admin Panel - Payments</h1>
     <button class="btn" onclick="fetchPayments()">ဖတ်ရန် ပေးချေမှုများ</button>
 
@@ -89,8 +95,13 @@
     </table>
   </div>
 
+  <div class="auth-message" id="authMessage">
+    <!-- Authentication Message will show up here if user is not Admin -->
+  </div>
+
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
   <!-- Firebase Config -->
@@ -105,10 +116,36 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
   </script>
 
-  <!-- Admin Panel Logic -->
+  <!-- Admin Panel Logic with Authentication -->
   <script>
+    const adminEmail = "admin@example.com";  // Set your admin's email
+
+    function checkAdminAccess() {
+      const authMessage = document.getElementById('authMessage');
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          if (user.email === adminEmail) {
+            // Admin authenticated, show the panel
+            document.getElementById('adminPanel').style.display = 'block';
+            authMessage.style.display = 'none';
+          } else {
+            // Not an admin, show error message
+            document.getElementById('adminPanel').style.display = 'none';
+            authMessage.textContent = "သင်သည် Admin မဟုတ်ပါ။ Admin အဖြစ်ဝင်ရန် လိုအပ်ပါသည်။";
+            authMessage.style.display = 'block';
+          }
+        } else {
+          // No user is signed in, show login prompt
+          document.getElementById('adminPanel').style.display = 'none';
+          authMessage.textContent = "Admin Panel သုံးရန် ဝင်ရောက်ပေးပါ။";
+          authMessage.style.display = 'block';
+        }
+      });
+    }
+
     function fetchPayments() {
       const paymentTable = document.getElementById('paymentTable');
       paymentTable.innerHTML = '';  // Clear current table data
@@ -131,6 +168,9 @@
         alert("Error fetching payments: " + error.message);
       });
     }
+
+    // Call the checkAdminAccess function when the page loads
+    checkAdminAccess();
   </script>
 
 </body>
