@@ -2,90 +2,96 @@
 <html lang="my">
 <head>
   <meta charset="UTF-8">
-  <title>Payments</title>
+  <title>Payment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to bottom right, #007BFF, #66CCFF);
+      background: linear-gradient(to right, #0047ab, #00c6ff);
+      font-family: 'Segoe UI', sans-serif;
       color: white;
-      font-family: 'Arial', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-    }
-
-    .payment-card {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      margin: 0;
       text-align: center;
-      max-width: 320px;
     }
 
-    .payment-card h2 {
-      font-size: 20px;
-      margin-bottom: 15px;
-    }
-
-    .amount {
-      font-size: 28px;
-      font-weight: bold;
+    h1 {
       margin-bottom: 10px;
     }
 
-    .duration {
-      font-size: 16px;
-      margin-bottom: 25px;
-    }
-
-    .pay-options {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+    p {
+      font-size: 1.1em;
+      margin-bottom: 20px;
     }
 
     .pay-btn {
-      padding: 12px 25px;
       background: white;
-      color: #007BFF;
-      font-weight: bold;
+      color: #0047ab;
       border: none;
-      border-radius: 25px;
+      padding: 15px 30px;
+      margin: 10px;
+      border-radius: 30px;
+      font-size: 1.1em;
       cursor: pointer;
       transition: transform 0.2s ease;
     }
 
     .pay-btn:hover {
       transform: scale(1.05);
-    }
-
-    .back-link {
-      margin-top: 20px;
-      color: white;
-      text-decoration: underline;
-      cursor: pointer;
+      background: #e6f0ff;
     }
   </style>
 </head>
 <body>
 
-  <div class="payment-card">
-    <h2>အသုံးပြုခစနစ်</h2>
-    <div class="amount">5000 ကျပ်</div>
-    <div class="duration">ရက် 30 သုံးစွဲနိုင်သည်</div>
+  <h1>ပေးချေမှု ရွေးချယ်ပါ</h1>
+  <p>သင့်အကောင့်ကို 5000 ကျပ်ဖြင့် ရက်(30) တိုးနိုင်သည်။</p>
 
-    <div class="pay-options">
-      <button class="pay-btn" onclick="location.href='kbzpay-qr.html'">KBZPay ဖြင့် ပေးချေမည်</button>
-      <button class="pay-btn" onclick="location.href='wavepay-qr.html'">WavePay ဖြင့် ပေးချေမည်</button>
-    </div>
+  <button class="pay-btn" id="kbz-btn">KBZPay ဖြင့် ပေးချေမည်</button>
+  <button class="pay-btn" id="wave-btn">WavePay ဖြင့် ပေးချေမည်</button>
 
-    <div class="back-link" onclick="window.history.back()">← နောက်သို့</div>
-  </div>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <!-- Firebase Config -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAr7Hv2ApKtNTxF11MhT5cuWeg_Dgsh0TY",
+      authDomain: "smart-burme-app.firebaseapp.com",
+      projectId: "smart-burme-app",
+      storageBucket: "smart-burme-app.appspot.com",
+      messagingSenderId: "851502425686",
+      appId: "1:851502425686:web:f29e0e1dfa84794b4abdf7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <!-- Payment Logic -->
+  <script>
+    const userId = "USER_ID_001"; // Firebase Auth အသုံးပြုမယ်ဆိုရင် dynamic ပြောင်းနိုင်
+
+    function savePayment(method) {
+      db.collection("payments").doc(userId).set({
+        method: method,
+        amount: 5000,
+        status: "pending",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        alert(method + " ဖြင့် ပေးချေမှု စာရင်းသွင်းပြီးပါပြီ။");
+        window.location.href = method === "KBZPay" ? "kbzpay-qr.html" : "wavepay-qr.html";
+      }).catch((error) => {
+        alert("မှားယွင်းမှုရှိသည်: " + error.message);
+      });
+    }
+
+    document.getElementById('kbz-btn').addEventListener('click', () => savePayment("KBZPay"));
+    document.getElementById('wave-btn').addEventListener('click', () => savePayment("WavePay"));
+  </script>
 
 </body>
 </html>
