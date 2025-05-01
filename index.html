@@ -1,17 +1,42 @@
 <!DOCTYPE html>
-<html lang="my">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Burme App</title>
+  <title>Smart Burme - Payment</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+      font-family: sans-serif;
+      color: white;
+      text-align: center;
+      padding-top: 100px;
+    }
+    .login-btn {
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #ffffff;
+      color: #2193b0;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .login-btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>5000 ကျပ်သွင်း၍ ရက် 30 အသုံးပြုနိုင်သည်</h1>
+  <button class="login-btn" onclick="goToPayment()">Login</button>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-  <!-- Firebase Config -->
   <script>
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAr7Hv2ApKtNTxF11MhT5cuWeg_Dgsh0TY",
       authDomain: "smart-burme-app.firebaseapp.com",
@@ -22,91 +47,11 @@
     };
 
     // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-  </script>
+    firebase.initializeApp(firebaseConfig);
 
-  <!-- Custom Styles -->
-  <style>
-    body {
-      background-color: #1e90ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      text-align: center;
-    }
-
-    .loader {
-      border: 16px solid #f3f3f3;
-      border-top: 16px solid #3498db;
-      border-radius: 50%;
-      width: 100px;
-      height: 100px;
-      animation: spin 2s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .container {
-      display: none;
-    }
-
-    .payment-message {
-      font-size: 1.2em;
-    }
-
-    .btn-login {
-      padding: 10px 20px;
-      background-color: #3498db;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      cursor: pointer;
-    }
-    
-    .btn-login:hover {
-      background-color: #2980b9;
-    }
-  </style>
-</head>
-<body>
-  <div class="loader"></div>
-  <div class="container">
-    <p class="payment-message">5000 ကျပ်သွင်း၍ ရက် 30 အသုံးပြုနိုင်သည်</p>
-    <button class="btn-login" onclick="handlePayment()">Login & Pay</button>
-  </div>
-
-  <!-- Firebase Authentication Logic & Payment Handling -->
-  <script>
-    // Display the loader first, then show content after a delay
-    setTimeout(function() {
-      document.querySelector('.loader').style.display = 'none';
-      document.querySelector('.container').style.display = 'block';
-    }, 3000);
-
-    // Handle Payment and Redirect to Payment Success page
-    function handlePayment() {
-      const user = firebase.auth().currentUser;
-
-      if (user) {
-        const paymentSuccess = true;  // Simulate successful payment
-
-        if (paymentSuccess) {
-          // Redirect to payment success page
-          window.location.href = "paymentSuccess.html";
-        } else {
-          alert("Payment failed. Please try again.");
-        }
-      } else {
-        alert("Please login first to complete payment.");
-      }
+    // Go to payments.html on button click
+    function goToPayment() {
+      window.location.href = "payments.html";
     }
   </script>
 </body>
