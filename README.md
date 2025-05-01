@@ -1,1 +1,1 @@
-https://github.com/Smartburme/app/ai.git
+https://github.com/Smartburme/ai.git
