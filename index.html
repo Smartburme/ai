@@ -2,88 +2,112 @@
 <html lang="my">
 <head>
   <meta charset="UTF-8">
-  <title>Smart Burme Index</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Burme App</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js"></script>
+
+  <!-- Firebase Config -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAr7Hv2ApKtNTxF11MhT5cuWeg_Dgsh0TY",
+      authDomain: "smart-burme-app.firebaseapp.com",
+      projectId: "smart-burme-app",
+      storageBucket: "smart-burme-app.appspot.com",
+      messagingSenderId: "851502425686",
+      appId: "1:851502425686:web:f29e0e1dfa84794b4abdf7"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+  </script>
+
+  <!-- Custom Styles -->
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to bottom right, #007BFF, #66CCFF);
-      color: white;
-      font-family: 'Arial', sans-serif;
+      background-color: #1e90ff;
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       height: 100vh;
-      overflow: hidden;
-    }
-
-    .loader {
-      border: 6px solid #ffffff33;
-      border-top: 6px solid white;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .message {
-      font-size: 18px;
-      margin-bottom: 40px;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
       text-align: center;
     }
 
-    .login-btn {
-      position: fixed;
-      bottom: 40px;
-      padding: 15px 30px;
-      background: white;
-      color: #007BFF;
-      font-weight: bold;
-      border: none;
-      border-radius: 30px;
-      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.4);
-      cursor: pointer;
-      transform: translateY(100px);
-      opacity: 0;
-      transition: all 1s ease;
+    .loader {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      animation: spin 2s linear infinite;
     }
 
-    .login-btn.show {
-      transform: translateY(0);
-      opacity: 1;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .container {
+      display: none;
+    }
+
+    .payment-message {
+      font-size: 1.2em;
+    }
+
+    .btn-login {
+      padding: 10px 20px;
+      background-color: #3498db;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+    
+    .btn-login:hover {
+      background-color: #2980b9;
     }
   </style>
 </head>
 <body>
-  <div class="loader" id="loader"></div>
-  <div class="message">5000 ကျပ်သွင်း၍ ရက် 30 အသုံးပြုနိုင်သည်</div>
-  <button class="login-btn" id="loginBtn" onclick="location.href='payments.html'">Login</button>
+  <div class="loader"></div>
+  <div class="container">
+    <p class="payment-message">5000 ကျပ်သွင်း၍ ရက် 30 အသုံးပြုနိုင်သည်</p>
+    <button class="btn-login" onclick="handlePayment()">Login & Pay</button>
+  </div>
 
-  <!-- Firebase SDK Placeholder -->
-  <!-- <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+  <!-- Firebase Authentication Logic & Payment Handling -->
   <script>
-    const firebaseConfig = {
-      // Firebase config will go here
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script> -->
+    // Display the loader first, then show content after a delay
+    setTimeout(function() {
+      document.querySelector('.loader').style.display = 'none';
+      document.querySelector('.container').style.display = 'block';
+    }, 3000);
 
-  <script>
-    // Simulate loading
-    window.onload = function () {
-      setTimeout(() => {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('loginBtn').classList.add('show');
-      }, 2000);
-    };
+    // Handle Payment and Redirect to Payment Success page
+    function handlePayment() {
+      const user = firebase.auth().currentUser;
+
+      if (user) {
+        const paymentSuccess = true;  // Simulate successful payment
+
+        if (paymentSuccess) {
+          // Redirect to payment success page
+          window.location.href = "paymentSuccess.html";
+        } else {
+          alert("Payment failed. Please try again.");
+        }
+      } else {
+        alert("Please login first to complete payment.");
+      }
+    }
   </script>
 </body>
 </html>
