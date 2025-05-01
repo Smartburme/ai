@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - Payments</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: linear-gradient(to right, #0047ab, #00c6ff);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #fff;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #0047ab;
+    }
+
+    td {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn {
+      background: #0047ab;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #0061cc;
+    }
+
+    .status {
+      text-transform: capitalize;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Admin Panel - Payments</h1>
+    <button class="btn" onclick="fetchPayments()">ဖတ်ရန် ပေးချေမှုများ</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Payment Method</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="paymentTable">
+        <!-- Payment records will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <!-- Firebase Config -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAr7Hv2ApKtNTxF11MhT5cuWeg_Dgsh0TY",
+      authDomain: "smart-burme-app.firebaseapp.com",
+      projectId: "smart-burme-app",
+      storageBucket: "smart-burme-app.appspot.com",
+      messagingSenderId: "851502425686",
+      appId: "1:851502425686:web:f29e0e1dfa84794b4abdf7"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <!-- Admin Panel Logic -->
+  <script>
+    function fetchPayments() {
+      const paymentTable = document.getElementById('paymentTable');
+      paymentTable.innerHTML = '';  // Clear current table data
+
+      db.collection("payments").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          const row = document.createElement('tr');
+          
+          row.innerHTML = `
+            <td>${doc.id}</td>
+            <td>${data.method}</td>
+            <td>${data.amount}</td>
+            <td class="status">${data.status}</td>
+            <td>${new Date(data.timestamp.seconds * 1000).toLocaleString()}</td>
+          `;
+          paymentTable.appendChild(row);
+        });
+      }).catch((error) => {
+        alert("Error fetching payments: " + error.message);
+      });
+    }
+  </script>
+
+</body>
+</html>
