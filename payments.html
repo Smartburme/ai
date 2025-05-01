@@ -1,77 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Smart Burme - Payments</title>
+  <title>Payment - Smart Burme</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <style>
     body {
-      background: #000;
+      background: black;
       color: white;
-      font-family: sans-serif;
       text-align: center;
-      padding: 30px;
+      padding-top: 80px;
+      font-family: sans-serif;
     }
-    h1 {
-      color: #00c6ff;
-    }
-    .payment-options, .auth-form {
-      margin-top: 50px;
+    input, button {
+      padding: 10px;
+      margin: 8px;
+      font-size: 16px;
+      border-radius: 6px;
     }
     .pay-btn {
-      background-color: #00c6ff;
+      background: #4CAF50;
       color: white;
-      border: none;
-      padding: 15px 25px;
-      font-size: 18px;
-      border-radius: 10px;
-      margin: 10px;
-      cursor: pointer;
-    }
-    .pay-btn:hover {
-      transform: scale(1.05);
-    }
-    .auth-form {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-    }
-    .auth-form input {
-      padding: 10px;
-      margin: 10px;
-      width: 200px;
-      border-radius: 5px;
-      border: none;
-    }
-    .auth-form button {
-      background-color: #00ff99;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .auth-form button:hover {
-      transform: scale(1.05);
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>ငွေချေမှုနည်းလမ်း ရွေးချယ်ပါ</h1>
 
-  <div class="payment-options">
-    <button class="pay-btn" onclick="simulatePayment('KBZPay')">KBZPay</button>
-    <button class="pay-btn" onclick="simulatePayment('WavePay')">WavePay</button>
-  </div>
+  <h1>Pay 5000Ks for 30-Day Access</h1>
 
-  <div class="auth-form" id="authForm">
-    <h2>Login Info</h2>
-    <input type="email" id="email" placeholder="Enter Email" required />
-    <input type="password" id="password" placeholder="Enter Password" required />
-    <button onclick="register()">Submit</button>
-  </div>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <input type="email" id="email" placeholder="Enter Email"><br>
+  <input type="password" id="password" placeholder="Create Password"><br>
+  <button class="pay-btn" onclick="processPayment()">Pay Now</button>
 
   <script>
     // Firebase Config
@@ -83,34 +44,49 @@
       messagingSenderId: "851502425686",
       appId: "1:851502425686:web:f29e0e1dfa84794b4abdf7"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    function simulatePayment(method) {
-      alert(method + " ဖြင့် ငွေချေနေသည်...");
+    // EmailJS Init
+    emailjs.init("MLJqwYo1ZN4j15iYx");
 
-      setTimeout(() => {
-        alert("ငွေချေမှု အောင်မြင်ပါသည်!");
-        document.querySelector('.payment-options').style.display = 'none';
-        document.getElementById('authForm').style.display = 'flex';
-      }, 2000);
+    function sendLoginMail(email, password) {
+      emailjs.send("smartburme25", "mail25", {
+        to_email: email,
+        message: `Smart Burme Payment Successful!\nYour login info:\nEmail: ${email}\nPassword: ${password}`
+      }).then(
+        res => {
+          console.log("Mail sent:", res);
+          alert("Payment success. Check your email for login info.");
+          window.location.href = "app/main.html";
+        },
+        err => {
+          console.error("Mail error:", err);
+          alert("Payment done. But email sending failed.");
+        }
+      );
     }
 
-    function register() {
+    function processPayment() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          alert("Login Success! Redirecting...");
-          window.location.href = "app/main.html"; // redirect to app/main.html
-        })
-        .catch((error) => {
-          alert("Error: " + error.message);
-        });
+      // Simulate successful payment
+      const paymentSuccess = true;
+
+      if (paymentSuccess) {
+        auth.createUserWithEmailAndPassword(email, password)
+          .then(() => {
+            sendLoginMail(email, password);
+          })
+          .catch(err => {
+            alert("Register Error: " + err.message);
+          });
+      } else {
+        alert("Payment failed. Try again.");
+      }
     }
   </script>
+
 </body>
 </html>
