@@ -1,58 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Smart Burme - Payment</title>
+  <meta charset="UTF-8">
+  <title>Smart Burme Loader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="3;url=main.html">
   <style>
-    body {
-      background: linear-gradient(to right, #2193b0, #6dd5ed);
-      font-family: sans-serif;
-      color: white;
-      text-align: center;
-      padding-top: 100px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .login-btn {
-      padding: 15px 30px;
-      font-size: 18px;
-      background-color: #ffffff;
-      color: #2193b0;
-      border: none;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
-      cursor: pointer;
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: black;
     }
-    .login-btn:hover {
-      transform: scale(1.05);
+
+    .loader-container {
+      width: 100%;
+      height: 100vh;
+      background: url('background/index.jpg') no-repeat center center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .title {
+      font-size: 2.5rem;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff, 0 0 20px #00cccc;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 30px;
+    }
+
+    .glow-text {
+      font-size: 1.5rem;
+      color: #fff;
+      text-shadow: 0 0 10px #ff5500, 0 0 20px #ff5500;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 1;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>5000 ကျပ်သွင်း၍ ရက် 30 အသုံးပြုနိုင်သည်</h1>
-  <button class="login-btn" onclick="goToPayment()">Login</button>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <div class="loader-container">
+    <div class="title">Smart Burme</div>
+    <img src="Animation - 1746554391918.gif" alt="Smart Burme Logo" class="logo">
+  </div>
 
-  <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAr7Hv2ApKtNTxF11MhT5cuWeg_Dgsh0TY",
-      authDomain: "smart-burme-app.firebaseapp.com",
-      projectId: "smart-burme-app",
-      storageBucket: "smart-burme-app.appspot.com",
-      messagingSenderId: "851502425686",
-      appId: "1:851502425686:web:f29e0e1dfa84794b4abdf7"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-
-    // Go to payments.html on button click
-    function goToPayment() {
-      window.location.href = "payments.html";
-    }
-  </script>
 </body>
 </html>
