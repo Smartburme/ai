@@ -317,3 +317,190 @@ To run the web server:
 ```bash
 uvicorn assistant.interfaces.web:app --reload
 ```
+## 1. GitHub Actions (CI/CD) Configuration
+
+### .github/workflows/tests.yml
+```yaml
+name: Run Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest
+    - name: Run tests
+      run: |
+        pytest tests/ -v
+```
+
+### .github/workflows/deploy.yml
+```yaml
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Deploy to Server
+      env:
+        SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SERVER_IP: ${{ secrets.PRODUCTION_IP }}
+      run: |
+        # Add your deployment scripts here
+        echo "Deploying to production server..."
+```
+
+## 2. Documentation Files
+
+### docs/architecture.md
+```
+# System Architecture
+
+## Components
+1. **NLP Engine** - စာသားများကို နားလည်ပြီး ရည်ရွယ်ချက်ကို ခွဲခြားပေးသည်
+2. **Dialog Manager** - စကားပြောဆိုမှုအလိုက် စီမံခန့်ခွဲပေးသည်
+3. **Skills Modules** - အထူးလုပ်ဆောင်ချက်များ (ရာသီဥတု၊ ဂဏန်းတွက်ချက်မှု စသည်)
+4. **Interfaces** - CLI, Web API နှင့် REST API တို့ဖြင့် အသုံးပြုနိုင်သည်
+
+## Data Flow
+User Input → Interface → NLP → Dialog Manager → Skill → Response
+```
+
+### docs/api.md
+```
+# API Documentation
+
+## Endpoints
+- `POST /chat` - စာတိုပေးပို့ရန်
+  - Parameters: `user_input` (string)
+  - Returns: JSON response with `response` and `intent`
+
+- `GET /health` - ဆာဗာအခြေအနေစစ်ဆေးရန်
+  - Returns: `{"status": "healthy"}`
+```
+
+## 3. Environment Configuration
+
+### .env.example
+```
+DEBUG=True
+API_KEY=your_api_key_here
+MODEL_PATH=data/models/nlp_model.h5
+DATABASE_URL=sqlite:///data/assistant.db
+```
+
+### .gitignore
+```
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+env/
+venv/
+*.env
+
+# Data files
+data/models/
+*.db
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+```
+
+## 4. Project README
+
+### README.md
+```markdown
+# AI Assistant Project
+
+မြန်မာဘာသာဖြင့် အခြေခံထားသော AI အကူအညီစနစ်
+
+## Features
+- ရိုးရှင်းသော NLP အင်ဂျင်
+- Modular skills system
+- CLI နှင့် Web Interface နှစ်မျိုးလုံး
+- REST API ထောက်ပံ့မှု
+
+## Installation
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+CLI Version:
+```bash
+python -m assistant.interfaces.cli
+```
+
+Web Server:
+```bash
+uvicorn assistant.interfaces.web:app --reload
+```
+
+## License
+MIT License
+```
+
+## 5. MIT License
+
+### LICENSE
+```
+MIT License
+
+Copyright (c) [year] [fullname]
+
+Permission is hereby granted...
+(ကျန်တဲ့ MIT license စာသားများ)
+```
+
+## 6. Utility Scripts
+
+### scripts/setup_env.sh
+```bash
+#!/bin/bash
+# Virtual environment setup script
+
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### scripts/train_model.py
+```python
+"""
+Dummy model training script
+Would be replaced with actual ML training code
+"""
+print("Training model...")
+print("Model saved to data/models/nlp_model.h5")
+```
+
+---
