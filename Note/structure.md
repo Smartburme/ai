@@ -1,4 +1,5 @@
-
+# Structure 
+```
 ai-assistant/
 │
 ├── .github/                ← GitHub Actions (CI/CD)
