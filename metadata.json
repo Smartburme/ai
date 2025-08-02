@@ -1,0 +1,6 @@
+{
+  "name": "Burmese AI Chatbot",
+  "description": "A modern and sleek AI chatbot application that communicates in Burmese, powered by Google's Gemini API. Users can engage in natural conversations with an AI assistant.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
